@@ -8,12 +8,21 @@ public static class Arrays
     /// <returns>array of doubles that are the multiples of the supplied number</returns>
     public static double[] MultiplesOf(double number, int length)
     {
-        // TODO Problem 1 Start
-        // Remember: Using comments in your program, write down your process for solving this problem
-        // step by step before you write the code. The plan should be clear enough that it could
-        // be implemented by another person.
+        // Plan:
+        // 1. Create an array of doubles with the size of 'length'
+        // 2. Loop from 1 to 'length' (inclusive)
+        // 3. At each iteration i, store (number * i) in the array at index (i - 1)
+        // 4. Return filled array
 
-        return []; // replace this return statement with your own
+        double[] result = new double[length]; // Step 1
+
+        for (int i = 1; i <= length; i++) // Step 2
+        {
+            result[i - 1] = number * i; // Step 3
+        }
+
+
+        return result; // Step 4
     }
 
     /// <summary>
@@ -25,9 +34,31 @@ public static class Arrays
     /// </summary>
     public static void RotateListRight(List<int> data, int amount)
     {
-        // TODO Problem 2 Start
-        // Remember: Using comments in your program, write down your process for solving this problem
-        // step by step before you write the code. The plan should be clear enough that it could
-        // be implemented by another person.
+        // Plan:
+        // "Rotate right by amount" means the last 'amount' elements move to the front.
+        // Example: {1,2,3,4,5,6,7,8,9}, amount=3 {7,8,9,1,2,3,4,5,6}
+        // The last 3 elements {7,8,9} become the new front.
+
+        // Using GetRange to slice the list into two parts:
+        // "tail": the last 'amount' elements
+        // starts at index (data.Count - amount), length = amount
+        // "head": everything before the tail
+        // starts at index 0, length = (data.Count - amount)
+        
+        // Steps:
+        // 1. Slice out the tail using GetRange(data.Count - amount, amount)
+        // 2. Slice out the head using GetRange(0, data.Count - amount)
+        // 3. Clear the original list (or remove all elements)
+        // 4. Add the tail first (it becomes the new front)
+        // 5. Add the head after (it becomes the new back)
+
+        List<int> tail = data.GetRange(data.Count - amount, amount); // Step 1
+        List<int> head = data.GetRange(0, data.Count - amount); // Step 2
+
+        data.Clear(); // Step 3
+        data.AddRange(tail); // Step 4
+        data.AddRange(head); // Step 5  
+
+
     }
 }
