@@ -32,7 +32,21 @@ public class LinkedList : IEnumerable<int>
     /// </summary>
     public void InsertTail(int value)
     {
-        // TODO Problem 1
+        // Create new node
+        Node newNode = new(value);
+        // If the list is empty, then point both head and tail to the new node.
+        if (_tail is null)
+        {
+            _head = newNode;
+            _tail = newNode;
+        }
+        // If the list is not empty, then only tail will be affected.
+        else
+        {
+            newNode.Prev = _tail;   // Connect new node back to the previous tail
+            _tail.Next = newNode;   // Connect the previous tail forward to the new node
+            _tail = newNode;        // Update the tail to point to the new node
+        }
     }
 
 
@@ -54,7 +68,7 @@ public class LinkedList : IEnumerable<int>
         else if (_head is not null)
         {
             _head.Next!.Prev = null; // Disconnect the second node from the first node
-            _head = _head.Next; // Update the head to point to the second node
+            _head = _head.Next;      // Update the head to point to the second node
         }
     }
 
@@ -64,7 +78,18 @@ public class LinkedList : IEnumerable<int>
     /// </summary>
     public void RemoveTail()
     {
-        // TODO Problem 2
+        // If the list has only one item (or is empty), set both to null.
+        if (_head == _tail)
+        {
+            _head = null;
+            _tail = null;
+        }
+        // If the list has more than one item, then only the tail will be affected.
+        else if (_tail is not null)
+        {
+            _tail.Prev!.Next = null; // Disconnect the second-to-last node from the last node
+            _tail = _tail.Prev;      // Update the tail to point to the second-to-last node
+        }
     }
 
     /// <summary>
@@ -108,7 +133,34 @@ public class LinkedList : IEnumerable<int>
     /// </summary>
     public void Remove(int value)
     {
-        // TODO Problem 3
+        // Search for the node containing the value, starting at the head
+        Node? current = _head;
+        while (current is not null)
+        {
+            if (current.Data == value)
+            {
+                // Case 1: Node is the head — reuse existing logic
+                if (current == _head)
+                {
+                    RemoveHead();
+                }
+                // Case 2: Node is the tail — reuse existing logic
+                else if (current == _tail)
+                {
+                    RemoveTail();
+                }
+                // Case 3: Node is in the middle
+                else
+                {
+                    current.Prev!.Next = current.Next; // Bypass current going forward
+                    current.Next!.Prev = current.Prev; // Bypass current going backward
+                }
+
+                return; // Stop after the first match
+            }
+
+            current = current.Next;
+        }
     }
 
     /// <summary>
@@ -116,7 +168,17 @@ public class LinkedList : IEnumerable<int>
     /// </summary>
     public void Replace(int oldValue, int newValue)
     {
-        // TODO Problem 4
+        Node? current = _head;
+        while (current is not null)
+        {
+            if (current.Data == oldValue)
+            {
+                current.Data = newValue;
+                // No return — keep going to replace all matches
+            }
+
+            current = current.Next;
+        }
     }
 
     /// <summary>
@@ -146,8 +208,12 @@ public class LinkedList : IEnumerable<int>
     /// </summary>
     public IEnumerable Reverse()
     {
-        // TODO Problem 5
-        yield return 0; // replace this line with the correct yield return statement(s)
+        var curr = _tail; // Start at the end since this is a backward iteration
+        while (curr is not null)
+        {
+            yield return curr.Data; // Provide (yield) each item to the user
+            curr = curr.Prev;       // Go backward in the linked list
+        }
     }
 
     public override string ToString()
@@ -168,8 +234,10 @@ public class LinkedList : IEnumerable<int>
     }
 }
 
-public static class IntArrayExtensionMethods {
-    public static string AsString(this IEnumerable array) {
+public static class IntArrayExtensionMethods
+{
+    public static string AsString(this IEnumerable array)
+    {
         return "<IEnumerable>{" + string.Join(", ", array.Cast<int>()) + "}";
     }
 }
